@@ -1,10 +1,10 @@
-= nvim-mercurial
+# nvim-mercurial
 
-== Introduction
+## Introduction
 
 A Neovim plugin that integrates with Mercurial. Heavily inspired by [vim-fugitive](https://github.com/tpope/vim-fugitive).
 
-== Installation
+## Installation
 
 Configure the plugin through your plugin manager. For vim-plug, add this line:
 
@@ -12,9 +12,13 @@ Configure the plugin through your plugin manager. For vim-plug, add this line:
 Plug 'jacobsimpson/nvim-mercurial'
 ```
 
-== Development
+## Development
 
 ```sh
 nvim --cmd "set rtp+=./nvim-mercurial"
 ```
 
+```sh
+ luarocks install luacheck
+ luachck lua
+ ```
