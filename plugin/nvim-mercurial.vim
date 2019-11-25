@@ -48,6 +48,10 @@ autocmd FileType hgxl nnoremap <buffer> <silent> q :bd<CR>
 "autocmd FileType hgxl nnoremap <buffer> k ?\v[@*ox]  [0-9a-f]* jacobsimpson.*\|[@*ox]  [0-9a-f]* .*p4head<CR>
 autocmd FileType hgxl nnoremap <buffer> <silent> u :lua nvimmercurial.Update()<CR>
 autocmd FileType hgxl nnoremap <buffer> h gg/\v[@ox]  [0-9a-f]* .*p4head<CR>
+autocmd FileType hgxl nnoremap <buffer> <silent> { :lua nvimmercurial.MoveBackward()<CR>
+autocmd FileType hgxl nnoremap <buffer> <silent> [[ :lua nvimmercurial.MoveBackward()<CR>
+autocmd FileType hgxl nnoremap <buffer> <silent> } :lua nvimmercurial.MoveForward()<CR>
+autocmd FileType hgxl nnoremap <buffer> <silent> ]] :lua nvimmercurial.MoveForward()<CR>
 
 " Special behavior when editing hgcommit messages.
 autocmd FileType hgcommit nnoremap <buffer> <silent> <C-c>  ggdG:wq<CR>

@@ -309,6 +309,14 @@ local function Status()
     restore_active_file(active)
 end
 
+local function MoveForward()
+    vim.fn.search("[@ox]  [0-9a-f]* ", "W")
+end
+
+local function MoveBackward()
+    vim.fn.search("[@ox]  [0-9a-f]* ", "bW")
+end
+
 nvimmercurial = {
     HG_STATUS_FILETYPE = HG_STATUS_FILETYPE,
     HG_GRAPHLOG_FILETYPE = HG_GRAPHLOG_FILETYPE,
@@ -320,4 +328,6 @@ nvimmercurial = {
     Status = Status,
     ToggleFileSelect = ToggleFileSelect,
     Update = Update,
+    MoveBackward = MoveBackward,
+    MoveForward = MoveForward,
 }
