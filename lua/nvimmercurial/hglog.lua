@@ -84,6 +84,10 @@ function Commit:GetFileFold()
     return {descLength + 2, descLength + 1 + fileLength}
 end
 
+-- copies needs to reference the summary function, but in doing so makes a
+-- cycle of references, so this predeclares summary, to satisfy the linter.
+local summary
+
 local function copies(line, commit)
     local loc, _ = string.find(line, "<<<<<<<<<<done>>>>>>>>>>")
     if loc ~= nil then
@@ -117,7 +121,7 @@ local function description(line, commit)
     return description
 end
 
-local function summary(line, commit)
+summary = function(line, commit)
     commit:setSummary(line)
     return description
 end

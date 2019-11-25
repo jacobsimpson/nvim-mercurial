@@ -13,7 +13,7 @@
 --
 local function getHighlight(group)
     local highlight = vim.trim(vim.fn.execute("highlight " .. group))
-    loc, _ = string.find(highlight, " ")
+    local loc, _ = string.find(highlight, " ")
     highlight = vim.trim(string.sub(highlight, loc))
     loc, _ = string.find(highlight, " ")
     highlight = vim.trim(string.sub(highlight, loc))

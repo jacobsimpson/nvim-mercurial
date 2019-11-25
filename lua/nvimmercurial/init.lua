@@ -16,50 +16,6 @@ local function Commit()
     -- Close the existing status window.
 end
 
-local function AddFile()
-    -- As far as I can tell, the neovim job control functions are not yet
-    -- natively available from Lua, so usin the native Lua version for the
-    -- moment. The native Lua version does not have an option to read stdout
-    -- and stderr.
-    local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
-    local handle = io.popen("hg add " .. files[cursor[1]]['filename'])
-    local result = handle:read("*a")
-    handle:close()
-
-    local active = store_active_file()
-    load_status()
-    show_status()
-    restore_active_file(active)
-end
-
-local function RevertFile()
-    -- As far as I can tell, the neovim job control functions are not yet
-    -- natively available from Lua, so usin the native Lua version for the
-    -- moment. The native Lua version does not have an option to read stdout
-    -- and stderr.
-    local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
-    local handle = io.popen("hg revert " .. files[cursor[1]]['filename'])
-    local result = handle:read("*a")
-    handle:close()
-
-    local active = store_active_file()
-    load_status()
-    show_status()
-    restore_active_file(active)
-end
-
-local function get_status_buffer()
-    if not vim.api.nvim_buf_is_loaded(statusBuffer) then
-        statusBuffer, _ = borderwin.New()
-        -- Open a split and switch to the buffer.
-        --vim.api.nvim_command("split | b" .. statusBuffer)
-        vim.api.nvim_buf_set_option(statusBuffer, 'buftype', 'nofile')
-        vim.api.nvim_buf_set_option(statusBuffer, 'filetype', HG_STATUS_FILETYPE)
-        vim.api.nvim_buf_set_name(statusBuffer, 'hg status')
-    end
-    return statusBuffer
-end
-
 -- If the current buffer is a status buffer, check which file currently has the
 -- cursor bside it, and return that. This way, the cursor can be restored to
 -- the same file after the status has been updated. Sometimes a status update
@@ -77,40 +33,6 @@ local function store_active_file()
     return files[row]['filename']
 end
 
--- If a file is passed in, look for that file in the current status buffer, and
--- put the cursor bside it. If there is no active file passed in, or the active
--- file is no longer in the status output, the cursor will end up on the first
--- file.
-local function restore_active_file(active)
-    local cursor = {1, 2}
-    if active ~= nil then
-        for i, f in pairs(files) do
-            if f['filename'] == active then
-                cursor[1] = i
-                break
-            end
-        end
-    end
-    vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), cursor)
-end
-
--- This should be replaced by vim.gsplit or vim.split.
-local function split(inputstr, sep)
-    if sep == nil then
-        sep = "%s"
-    end
-    local t={}
-    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-        table.insert(t, str)
-    end
-    return t
-end
-
--- This should be replaced by vim.trim().
-local function trim(s)
-   return (s:gsub("^%s*(.-)%s*$", "%1"))
-end
-
 local function load_status()
     local new_files = {}
     local indexed = {}
@@ -118,8 +40,8 @@ local function load_status()
     local result = handle:read("*a")
     handle:close()
 
-    for k, v in pairs(split(result, "\n")) do
-        if string.len(trim(result)) > 0 then
+    for _, v in ipairs(vim.split(result, "\n")) do
+        if string.len(vim.trim(result)) > 0 then
             local f = {
               selected = false,
               status = string.sub(v, 1, 1),
@@ -131,7 +53,7 @@ local function load_status()
     end
 
     -- Transfer the selected status from the previous list of files.
-    for k, f in pairs(files) do
+    for _, f in ipairs(files) do
         local i = indexed[f['filename']]
         if i ~= nil then
             i['selected'] = f['selected']
@@ -141,9 +63,21 @@ local function load_status()
     files = new_files
 end
 
+local function get_status_buffer()
+    if not vim.api.nvim_buf_is_loaded(statusBuffer) then
+        statusBuffer = borderwin.New()
+        -- Open a split and switch to the buffer.
+        --vim.api.nvim_command("split | b" .. statusBuffer)
+        vim.api.nvim_buf_set_option(statusBuffer, 'buftype', 'nofile')
+        vim.api.nvim_buf_set_option(statusBuffer, 'filetype', HG_STATUS_FILETYPE)
+        vim.api.nvim_buf_set_name(statusBuffer, 'hg status')
+    end
+    return statusBuffer
+end
+
 local function show_status()
     local lines = {}
-    for k, f in pairs(files) do
+    for _, f in ipairs(files) do
         table.insert(lines, string.format(" [%s] %s %s",
             f['selected'] and 'X' or ' ',
             f['status'],
@@ -156,6 +90,72 @@ local function show_status()
     vim.api.nvim_buf_set_option(buf, 'modifiable', false)
 end
 
+-- If a file is passed in, look for that file in the current status buffer, and
+-- put the cursor bside it. If there is no active file passed in, or the active
+-- file is no longer in the status output, the cursor will end up on the first
+-- file.
+local function restore_active_file(active)
+    local cursor = {1, 2}
+    if active ~= nil then
+        for i, f in ipairs(files) do
+            if f['filename'] == active then
+                cursor[1] = i
+                break
+            end
+        end
+    end
+    vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), cursor)
+end
+
+local function AddFile()
+    -- As far as I can tell, the neovim job control functions are not yet
+    -- natively available from Lua, so usin the native Lua version for the
+    -- moment. The native Lua version does not have an option to read stdout
+    -- and stderr.
+    local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
+    local handle = io.popen("hg add " .. files[cursor[1]]['filename'])
+    handle:read("*a")
+    handle:close()
+
+    local active = store_active_file()
+    load_status()
+    show_status()
+    restore_active_file(active)
+end
+
+local function RevertFile()
+    -- As far as I can tell, the neovim job control functions are not yet
+    -- natively available from Lua, so usin the native Lua version for the
+    -- moment. The native Lua version does not have an option to read stdout
+    -- and stderr.
+    local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
+    local handle = io.popen("hg revert " .. files[cursor[1]]['filename'])
+    handle:read("*a")
+    handle:close()
+
+    local active = store_active_file()
+    load_status()
+    show_status()
+    restore_active_file(active)
+end
+
+-- This should be replaced by vim.gsplit or vim.split.
+--local function split(inputstr, sep)
+--    if sep == nil then
+--        sep = "%s"
+--    end
+--    local t={}
+--    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+--        table.insert(t, str)
+--    end
+--    return t
+--end
+
+-- This should be replaced by vim.trim().
+--local function trim(s)
+--   return (s:gsub("^%s*(.-)%s*$", "%1"))
+--end
+
 local function ToggleFileSelect()
     local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
     files[cursor[1]]['selected'] = not files[cursor[1]]['selected']
@@ -164,15 +164,17 @@ end
 
 -- Sends a request to a remote Neovim instance for a commit message to be
 -- entered, and waits for that buffer to be closed.
-local function RequestCommitMessage()
-    local channel = vim.fn.sockconnect('pipe',
-        '/var/folders/nh/lwpxl66111j103y85rw0kdvw0000gn/T/nvimNdff2D/0',
-        { rpc = true })
-    vim.fn.rpcrequest(
-        channel,
-        'nvim_command',
-        string.format(':e ~/.zshrc | autocmd BufDelete <buffer> silent! call rpcnotify(%d, "BufDelete") | echo "this or that"', channel))
-end
+--local function RequestCommitMessage()
+--    local channel = vim.fn.sockconnect('pipe',
+--        '/var/folders/nh/lwpxl66111j103y85rw0kdvw0000gn/T/nvimNdff2D/0',
+--        { rpc = true })
+--    vim.fn.rpcrequest(
+--        channel,
+--        'nvim_command',
+--        string.format(':e ~/.zshrc '
+--            .. '| autocmd BufDelete <buffer> silent! call rpcnotify(%d, "BufDelete") '
+--            ,, '| echo "this or that"', channel))
+--end
 
 
 --function! mercurial#SyncUpload()
@@ -250,7 +252,7 @@ local function Update()
   end
 end
 
-function GraphLog()
+local function GraphLog()
     print("Loading ...")
     local buf, win = borderwin.New()
     vim.api.nvim_buf_set_option(buf, 'modifiable', true)
@@ -258,7 +260,15 @@ function GraphLog()
     vim.api.nvim_win_set_option(win, 'foldtext', 'MercurialFoldText()')
     vim.api.nvim_win_set_option(win, 'fillchars', 'fold: ')
     vim.api.nvim_win_set_option(win, 'foldcolumn', 0)
-    local existing = highlight.getHighlight("Folded")
+
+    -- The existing Fold highlight should be preserved and restored when
+    -- the buffer closes.
+    local folded = vim.fn.substitute(vim.trim(vim.fn.execute("highlight Folded")), " xxx ", "", "")
+    vim.api.nvim_command('autocmd BufLeave <buffer> highlight ' .. folded)
+
+    -- Make the Folded highlight the same as the Normal highlight so that a
+    -- Mercurial log will look normal and readable, less distraction, but
+    -- additional detail is available on request.
     local normal = highlight.getHighlight("Normal")
     highlight.setHighlight("Folded", normal)
 
@@ -277,7 +287,7 @@ function GraphLog()
             vim.api.nvim_buf_set_lines(buf, beginning, -1, false, commit:Lines())
             local foldRange = commit:GetFileFold()
             vim.api.nvim_command("" .. (first + foldRange[1]) .. "," .. (first + foldRange[2]) .. "fo")
-            local foldRange = commit:GetDescriptionFold()
+            foldRange = commit:GetDescriptionFold()
             vim.api.nvim_command("" .. (first + foldRange[1]) .. "," .. (first + foldRange[2]) .. "fo")
 
             -- The first time through, set the range to replace as the whole
