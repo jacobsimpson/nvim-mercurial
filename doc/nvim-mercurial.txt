@@ -1,0 +1,25 @@
+*nvim-mercurial.txt* A plugin for interacting with the Mercurial version control system.
+
+====================================================================
+CONTENTS                                           *MercurialContents*
+
+    1. Usage ................ |MercurialUsage|
+    2. Mappings ............. |MercurialMappings|
+    3. Bugs ................. |MercurialBugs|
+
+====================================================================
+Section 1: Usage                                      *MercurialUsage*
+
+This plugin provides an experience for interacting with a Mercurial
+repository that is integrated into Neovim.
+
+====================================================================
+Section 2: Mappings                                 *MecurialMappings*
+
+Hstatus - show the status of the current repository.
+Hlog    - show the commit log of the current repository.
+
+====================================================================
+Section 3: Bugs                                         *MecurialBugs*
+
+Report any problems at https://github.com/jacobsimpson/nvim-mercurial.

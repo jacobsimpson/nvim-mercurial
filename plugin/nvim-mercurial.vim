@@ -10,6 +10,7 @@
 lua require("nvimmercurial")
 
 command Hstatus lua nvimmercurial.Status()
+command Hlog lua nvimmercurial.GraphLog()
 
 nmap <silent> <Space>hst :Hstatus<CR>
 
