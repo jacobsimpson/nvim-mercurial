@@ -19,6 +19,6 @@ nvim --cmd "set rtp+=./nvim-mercurial"
 ```
 
 ```sh
- luarocks install luacheck
- luacheck lua
- ```
+luarocks install luacheck
+luacheck lua
+```
