@@ -1,5 +1,7 @@
 # nvim-mercurial
 
+WARNING - This plugin only works in Neovim 0.5.0. I'll add a version check to the plugin.
+
 ## Introduction
 
 A Neovim plugin that integrates with Mercurial. Heavily inspired by [vim-fugitive](https://github.com/tpope/vim-fugitive).
