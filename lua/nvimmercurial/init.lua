@@ -321,6 +321,22 @@ local function GraphLog()
     --exe '/\v[@]  [0-9a-f]* jacobsimpson.*|[@]  [0-9a-f]* .*p4head'
 end
 
+local function FoldClose()
+    if vim.fn.foldlevel(vim.fn.line('.')) == 0 then
+        vim.fn.execute("normal! zjzck")
+    else
+        vim.fn.execute("normal! zc")
+    end
+end
+
+local function FoldOpen()
+    if vim.fn.foldlevel(vim.fn.line('.')) == 0 then
+        vim.fn.execute("normal! zjzozj")
+    else
+        vim.fn.execute("normal! zo")
+    end
+end
+
 local function Status()
     local active = store_active_file()
     load_status()
@@ -342,11 +358,13 @@ nvimmercurial = {
 
     AddFile = AddFile,
     Commit = Commit,
+    FoldClose = FoldClose,
+    FoldOpen = FoldOpen,
     GraphLog = GraphLog,
+    MoveBackward = MoveBackward,
+    MoveForward = MoveForward,
     RevertFile = RevertFile,
     Status = Status,
     ToggleFileSelect = ToggleFileSelect,
     Update = Update,
-    MoveBackward = MoveBackward,
-    MoveForward = MoveForward,
 }

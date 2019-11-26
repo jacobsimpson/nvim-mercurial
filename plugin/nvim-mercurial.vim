@@ -34,25 +34,18 @@ nmap <silent> <Space>huc :silent !hg uploadchain<CR>
 
 autocmd FileType hgst nnoremap <buffer> <ESC> :bd<CR>
 autocmd FileType hgst nnoremap <buffer> q :bd<CR>
-"autocmd FileType hgst nnoremap <buffer> j /\v[@ox]  [0-9a-f]* jacobsimpson.*\|[@ox]  [0-9a-f]* .*p4head<CR>
-"autocmd FileType hgst nnoremap <buffer> k ?\v[@ox]  [0-9a-f]* jacobsimpson.*\|[@ox]  [0-9a-f]* .*p4head<CR>
-"autocmd FileType hgst nnoremap <buffer> <silent> u  :call mercurial#Update()<CR>
-"autocmd FileType hgst nnoremap <buffer> h gg/\v[@ox]  [0-9a-f]* .*p4head<CR>
-
-au Syntax hgxl runtime! syntax/hgxl.vim
-
 
 autocmd FileType hgxl nnoremap <buffer> <silent> <ESC> :bd<CR>
 autocmd FileType hgxl nnoremap <buffer> <silent> <C-c> :bd<CR>
 autocmd FileType hgxl nnoremap <buffer> <silent> q :bd<CR>
-"autocmd FileType hgxl nnoremap <buffer> j /\v[@*ox]  [0-9a-f]* jacobsimpson.*\|[@*ox]  [0-9a-f]* .*p4head<CR>
-"autocmd FileType hgxl nnoremap <buffer> k ?\v[@*ox]  [0-9a-f]* jacobsimpson.*\|[@*ox]  [0-9a-f]* .*p4head<CR>
 autocmd FileType hgxl nnoremap <buffer> <silent> u :lua nvimmercurial.Update()<CR>
 autocmd FileType hgxl nnoremap <buffer> h gg/\v[@ox]  [0-9a-f]* .*p4head<CR>
 autocmd FileType hgxl nnoremap <buffer> <silent> { :lua nvimmercurial.MoveBackward()<CR>
 autocmd FileType hgxl nnoremap <buffer> <silent> [[ :lua nvimmercurial.MoveBackward()<CR>
 autocmd FileType hgxl nnoremap <buffer> <silent> } :lua nvimmercurial.MoveForward()<CR>
 autocmd FileType hgxl nnoremap <buffer> <silent> ]] :lua nvimmercurial.MoveForward()<CR>
+autocmd FileType hgxl nnoremap <buffer> <silent> zo :lua nvimmercurial.FoldOpen()<CR>
+autocmd FileType hgxl nnoremap <buffer> <silent> zc :lua nvimmercurial.FoldClose()<CR>
 
 " Special behavior when editing hgcommit messages.
 autocmd FileType hgcommit nnoremap <buffer> <silent> <C-c>  ggdG:wq<CR>
