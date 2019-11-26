@@ -284,7 +284,16 @@ local function GraphLog()
         -- Parse will only return a result when a full commit is available to
         -- be appended to the buffer.
         if commit ~= nil then
-            vim.api.nvim_buf_set_lines(buf, beginning, -1, false, commit:Lines())
+            -- Append the text.
+            local lines = commit:Lines()
+            vim.api.nvim_buf_set_lines(buf, beginning, -1, false, lines)
+
+            -- Add some syntax highlighting.
+            vim.api.nvim_buf_add_highlight(buf, -1, "Constant", first, 3, 15)
+            local loc = string.find(lines[1], ">")
+            vim.api.nvim_buf_add_highlight(buf, -1, "Statement", first, 16, loc)
+
+            -- Add folds.
             local foldRange = commit:GetFileFold()
             vim.api.nvim_command("" .. (first + foldRange[1]) .. "," .. (first + foldRange[2]) .. "fo")
             foldRange = commit:GetDescriptionFold()
