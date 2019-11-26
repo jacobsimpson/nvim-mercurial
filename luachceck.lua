@@ -15,10 +15,3 @@ std = {
          "setmetatable",
      }
 }
-
-files["lua/nvimmercurial/init.lua"] = {
-    new_globals = {
-        "nvimmercurial",
-    }
-}
-

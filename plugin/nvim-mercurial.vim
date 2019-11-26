@@ -7,7 +7,7 @@
 "endif
 "let b:did_mercurial_plugin = 1
 
-lua require("nvimmercurial")
+lua nvimmercurial = require("nvimmercurial")
 
 command Hstatus lua nvimmercurial.Status()
 command Hlog lua nvimmercurial.GraphLog()

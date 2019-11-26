@@ -22,5 +22,5 @@ nvim --cmd "set rtp+=./nvim-mercurial"
 
 ```sh
 luarocks install luacheck
-luacheck lua
+luacheck --config luachceck.lua lua
 ```

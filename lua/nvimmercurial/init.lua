@@ -352,7 +352,7 @@ local function MoveBackward()
     vim.fn.search("[@ox]  [0-9a-f]* ", "bW")
 end
 
-nvimmercurial = {
+return {
     HG_STATUS_FILETYPE = HG_STATUS_FILETYPE,
     HG_GRAPHLOG_FILETYPE = HG_GRAPHLOG_FILETYPE,
 
