@@ -63,7 +63,7 @@ autocmd FileType hgcommit nnoremap <buffer> <silent> cic  /^CC=<CR>f=:nohlsearch
 autocmd FileType hgcommit nnoremap <buffer> <silent> dic  /^CC=<CR>f=:nohlsearch<CR>C=<ESC>
 
 
-function MercurialFoldText()
+function! MercurialFoldText()
   let line = getline(v:foldstart)
   let sub = substitute(line, '/\*\|\*/\|{{{\d\=', '', 'g')
   return sub
