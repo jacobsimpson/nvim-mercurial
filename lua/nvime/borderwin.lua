@@ -1,4 +1,4 @@
-local function New()
+local function new()
   -- get the editor's max width and height
   local editor_width = vim.api.nvim_get_option("columns")
   local editor_height = vim.api.nvim_get_option("lines")
@@ -78,5 +78,5 @@ local function New()
 end
 
 return {
-    New = New
+    new = new
 }

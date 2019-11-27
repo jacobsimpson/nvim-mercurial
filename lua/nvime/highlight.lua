@@ -5,13 +5,13 @@
 --
 -- Example:
 --
--- local h = getHighlight("Fold")
+-- local h = get_highlight("Fold")
 -- h.ctermfg == "7"
 -- h.ctermbg == "0"
 -- h.guifg == "Grey80"
 -- h.guibg == "Black"
 --
-local function getHighlight(group)
+local function get_highlight(group)
     local highlight = vim.trim(vim.fn.execute("highlight " .. group))
     local loc, _ = string.find(highlight, " ")
     highlight = vim.trim(string.sub(highlight, loc))
@@ -31,11 +31,11 @@ end
 --
 -- Example:
 --
--- setHighlight("Fold", {ctermfg="7", ctermbg="0", guifg="Grey80", guibg="Black"})
+-- set_highlight("Fold", {ctermfg="7", ctermbg="0", guifg="Grey80", guibg="Black"})
 --
 -- Warning, if the group does not exist, the error is not captured. I've not
 -- been able to figure out if there is a way to do that.
-local function setHighlight(group, values)
+local function set_highlight(group, values)
     local highlight = {"highlight ", group}
     if values ~= nil then
         if values.ctermfg ~= nil then
@@ -55,6 +55,6 @@ local function setHighlight(group, values)
 end
 
 return {
-    getHighlight = getHighlight,
-    setHighlight = setHighlight,
+    get_highlight = get_highlight,
+    set_highlight = set_highlight,
 }

@@ -10,7 +10,7 @@ local HG_GRAPHLOG_FILETYPE = 'hglog'
 local files = {}
 local statusBuffer = -1
 
-local function Commit()
+local function commit()
     -- Commit selected files, or if there are no files selected, commit all changes.
     -- HGEDITOR=<something to invoke this instance of Neovim.> hg commit
     -- Close the existing status window.
@@ -65,7 +65,7 @@ end
 
 local function get_status_buffer()
     if not vim.api.nvim_buf_is_loaded(statusBuffer) then
-        statusBuffer = borderwin.New()
+        statusBuffer = borderwin.new()
         -- Open a split and switch to the buffer.
         --vim.api.nvim_command("split | b" .. statusBuffer)
         vim.api.nvim_buf_set_option(statusBuffer, 'buftype', 'nofile')
@@ -107,7 +107,7 @@ local function restore_active_file(active)
     vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), cursor)
 end
 
-local function AddFile()
+local function add_file()
     -- As far as I can tell, the neovim job control functions are not yet
     -- natively available from Lua, so usin the native Lua version for the
     -- moment. The native Lua version does not have an option to read stdout
@@ -123,7 +123,7 @@ local function AddFile()
     restore_active_file(active)
 end
 
-local function RevertFile()
+local function revert_file()
     -- As far as I can tell, the neovim job control functions are not yet
     -- natively available from Lua, so usin the native Lua version for the
     -- moment. The native Lua version does not have an option to read stdout
@@ -156,7 +156,7 @@ end
 --   return (s:gsub("^%s*(.-)%s*$", "%1"))
 --end
 
-local function ToggleFileSelect()
+local function toggle_file_select()
     local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
     files[cursor[1]]['selected'] = not files[cursor[1]]['selected']
     show_status()
@@ -230,7 +230,7 @@ local function start(processLine)
     handle:close()
 end
 
-local function Update()
+local function update()
   print("Updating...")
   local currentLine = vim.fn.getline(".")
   local commit = vim.fn.matchstr(currentLine, '^[:| ]*[@*ox]  [0-9a-f]* ')
@@ -252,9 +252,9 @@ local function Update()
   end
 end
 
-local function GraphLog()
+local function graph_log()
     print("Loading ...")
-    local buf, win = borderwin.New()
+    local buf, win = borderwin.new()
     vim.api.nvim_buf_set_option(buf, 'modifiable', true)
     vim.api.nvim_buf_set_option(buf, 'filetype', HG_GRAPHLOG_FILETYPE)
     vim.api.nvim_win_set_option(win, 'foldtext', 'MercurialFoldText()')
@@ -269,8 +269,8 @@ local function GraphLog()
     -- Make the Folded highlight the same as the Normal highlight so that a
     -- Mercurial log will look normal and readable, less distraction, but
     -- additional detail is available on request.
-    local normal = highlight.getHighlight("Normal")
-    highlight.setHighlight("Folded", normal)
+    local normal = highlight.get_highlight("Normal")
+    highlight.set_highlight("Folded", normal)
 
     local parse = hglog.Parser()
 
@@ -321,7 +321,7 @@ local function GraphLog()
     --exe '/\v[@]  [0-9a-f]* jacobsimpson.*|[@]  [0-9a-f]* .*p4head'
 end
 
-local function FoldClose()
+local function fold_close()
     if vim.fn.foldlevel(vim.fn.line('.')) == 0 then
         vim.fn.execute("normal! zjzck")
     else
@@ -329,7 +329,7 @@ local function FoldClose()
     end
 end
 
-local function FoldOpen()
+local function fold_open()
     if vim.fn.foldlevel(vim.fn.line('.')) == 0 then
         vim.fn.execute("normal! zjzozj")
     else
@@ -337,18 +337,18 @@ local function FoldOpen()
     end
 end
 
-local function Status()
+local function status()
     local active = store_active_file()
     load_status()
     show_status()
     restore_active_file(active)
 end
 
-local function MoveForward()
+local function move_forward()
     vim.fn.search("[@ox]  [0-9a-f]* ", "W")
 end
 
-local function MoveBackward()
+local function move_backward()
     vim.fn.search("[@ox]  [0-9a-f]* ", "bW")
 end
 
@@ -356,15 +356,15 @@ return {
     HG_STATUS_FILETYPE = HG_STATUS_FILETYPE,
     HG_GRAPHLOG_FILETYPE = HG_GRAPHLOG_FILETYPE,
 
-    AddFile = AddFile,
-    Commit = Commit,
-    FoldClose = FoldClose,
-    FoldOpen = FoldOpen,
-    GraphLog = GraphLog,
-    MoveBackward = MoveBackward,
-    MoveForward = MoveForward,
-    RevertFile = RevertFile,
-    Status = Status,
-    ToggleFileSelect = ToggleFileSelect,
-    Update = Update,
+    add_file = add_file,
+    commit = commit,
+    fold_close = fold_close,
+    fold_open = fold_open,
+    graph_log = graph_log,
+    move_backward = move_backward,
+    move_forward = move_forward,
+    revert_file = revert_file,
+    status = status,
+    toggle_file_select = toggle_file_select,
+    update = update,
 }

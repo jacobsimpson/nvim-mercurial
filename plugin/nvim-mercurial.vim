@@ -9,25 +9,25 @@
 
 lua nvimmercurial = require("nvimmercurial")
 
-command Hstatus lua nvimmercurial.Status()
-command Hlog lua nvimmercurial.GraphLog()
+command Hstatus lua nvimmercurial.status()
+command Hlog lua nvimmercurial.graph_log()
 
 nmap <silent> <Space>hst :Hstatus<CR>
 
 augroup nvimmercurial
   au!
-  autocmd FileType hgstatus nnoremap <silent> <buffer> <Space> :lua nvimmercurial.ToggleFileSelect()<CR>
-  autocmd FileType hgstatus nnoremap <silent> <buffer> a :lua nvimmercurial.AddFile()<CR>
-  autocmd FileType hgstatus nnoremap <silent> <buffer> r :lua nvimmercurial.RevertFile()<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> <Space> :lua nvimmercurial.toggle_file_select()<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> a :lua nvimmercurial.add_file()<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> r :lua nvimmercurial.revert_file()<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> <ESC> :bd<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> <C-C> :bd<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> q :bd<CR>
 augroup END
 
+nmap <silent> <Space>hl :Hlog<CR>
+nmap <silent> <Space>hst :Hstatus<CR>
 nmap <silent> <Space>hrm :call mercurial#Resolve()<CR>
 nmap <silent> <Space>hhec :silent !hg histedit --continue<CR>
-nmap <silent> <Space>hl :lua nvimmercurial.GraphLog()<CR>
-"nmap <silent> <Space>hst :call mercurial#Status()<CR>
 nmap <silent> <Space>ham :call mercurial#Amend()<CR>
 nmap <silent> <Space>hsu :call mercurial#SyncUpload()<CR>
 nmap <silent> <Space>huc :silent !hg uploadchain<CR>
@@ -38,14 +38,14 @@ autocmd FileType hgst nnoremap <buffer> q :bd<CR>
 autocmd FileType hglog nnoremap <buffer> <silent> <ESC> :bd<CR>
 autocmd FileType hglog nnoremap <buffer> <silent> <C-c> :bd<CR>
 autocmd FileType hglog nnoremap <buffer> <silent> q :bd<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> u :lua nvimmercurial.Update()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> u :lua nvimmercurial.update()<CR>
 autocmd FileType hglog nnoremap <buffer> h gg/\v[@ox]  [0-9a-f]* .*p4head<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> { :lua nvimmercurial.MoveBackward()<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> [[ :lua nvimmercurial.MoveBackward()<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> } :lua nvimmercurial.MoveForward()<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> ]] :lua nvimmercurial.MoveForward()<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> zo :lua nvimmercurial.FoldOpen()<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> zc :lua nvimmercurial.FoldClose()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> { :lua nvimmercurial.move_backward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> [[ :lua nvimmercurial.move_backward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> } :lua nvimmercurial.move_forward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> ]] :lua nvimmercurial.move_forward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> zo :lua nvimmercurial.fold_open()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> zc :lua nvimmercurial.fold_close()<CR>
 
 " Special behavior when editing hgcommit messages.
 autocmd FileType hgcommit nnoremap <buffer> <silent> <C-c>  ggdG:wq<CR>
