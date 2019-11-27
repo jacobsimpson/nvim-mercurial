@@ -11,7 +11,7 @@ local function New()
   if editor_height < 10 then
       win_height = editor_height - 2
   else
-      win_height = math.min(math.ceil(editor_height * 3 / 4), 30)
+      win_height = math.ceil(editor_height * 4 / 5)
   end
 
   -- if the editor_width is small
@@ -31,7 +31,7 @@ local function New()
     style = "minimal",
     width = win_width,
     height = win_height,
-    row = math.ceil((editor_height - win_height) / 2),
+    row = math.ceil((editor_height - win_height) / 2) - 2,
     col = math.ceil((editor_width - win_width) / 2)
   }
 
