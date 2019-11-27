@@ -26,7 +26,7 @@ augroup END
 
 nmap <silent> <Space>hrm :call mercurial#Resolve()<CR>
 nmap <silent> <Space>hhec :silent !hg histedit --continue<CR>
-nmap <silent> <Space>hxl :lua nvimmercurial.GraphLog()<CR>
+nmap <silent> <Space>hl :lua nvimmercurial.GraphLog()<CR>
 "nmap <silent> <Space>hst :call mercurial#Status()<CR>
 nmap <silent> <Space>ham :call mercurial#Amend()<CR>
 nmap <silent> <Space>hsu :call mercurial#SyncUpload()<CR>
@@ -35,17 +35,17 @@ nmap <silent> <Space>huc :silent !hg uploadchain<CR>
 autocmd FileType hgst nnoremap <buffer> <ESC> :bd<CR>
 autocmd FileType hgst nnoremap <buffer> q :bd<CR>
 
-autocmd FileType hgxl nnoremap <buffer> <silent> <ESC> :bd<CR>
-autocmd FileType hgxl nnoremap <buffer> <silent> <C-c> :bd<CR>
-autocmd FileType hgxl nnoremap <buffer> <silent> q :bd<CR>
-autocmd FileType hgxl nnoremap <buffer> <silent> u :lua nvimmercurial.Update()<CR>
-autocmd FileType hgxl nnoremap <buffer> h gg/\v[@ox]  [0-9a-f]* .*p4head<CR>
-autocmd FileType hgxl nnoremap <buffer> <silent> { :lua nvimmercurial.MoveBackward()<CR>
-autocmd FileType hgxl nnoremap <buffer> <silent> [[ :lua nvimmercurial.MoveBackward()<CR>
-autocmd FileType hgxl nnoremap <buffer> <silent> } :lua nvimmercurial.MoveForward()<CR>
-autocmd FileType hgxl nnoremap <buffer> <silent> ]] :lua nvimmercurial.MoveForward()<CR>
-autocmd FileType hgxl nnoremap <buffer> <silent> zo :lua nvimmercurial.FoldOpen()<CR>
-autocmd FileType hgxl nnoremap <buffer> <silent> zc :lua nvimmercurial.FoldClose()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> <ESC> :bd<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> <C-c> :bd<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> q :bd<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> u :lua nvimmercurial.Update()<CR>
+autocmd FileType hglog nnoremap <buffer> h gg/\v[@ox]  [0-9a-f]* .*p4head<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> { :lua nvimmercurial.MoveBackward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> [[ :lua nvimmercurial.MoveBackward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> } :lua nvimmercurial.MoveForward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> ]] :lua nvimmercurial.MoveForward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> zo :lua nvimmercurial.FoldOpen()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> zc :lua nvimmercurial.FoldClose()<CR>
 
 " Special behavior when editing hgcommit messages.
 autocmd FileType hgcommit nnoremap <buffer> <silent> <C-c>  ggdG:wq<CR>

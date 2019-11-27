@@ -5,7 +5,7 @@ local highlight = require("nvime/highlight")
 -- nvim_subscribe might help me receive an rpcnotify.
 
 local HG_STATUS_FILETYPE = 'hgstatus'
-local HG_GRAPHLOG_FILETYPE = 'hgxl'
+local HG_GRAPHLOG_FILETYPE = 'hglog'
 
 local files = {}
 local statusBuffer = -1
