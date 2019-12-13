@@ -7,6 +7,13 @@ local highlight = require("nvime/highlight")
 local HG_STATUS_FILETYPE = 'hgstatus'
 local HG_GRAPHLOG_FILETYPE = 'hglog'
 
+local hg_log_cmd = [[hg log -l 100 -G -T '{node|short} {author} {date|isodate}
+{desc|fill68}
+<<<<<<<<<<files>>>>>>>>>>
+{files%"{status} {file}\n"}
+<<<<<<<<<<copies>>>>>>>>>>
+{file_copies%"{source}->{name}\n"}
+<<<<<<<<<<done>>>>>>>>>>']]
 local files = {}
 local statusBuffer = -1
 
@@ -216,13 +223,7 @@ local function start(processLine)
     -- hg help templates for more information about how to format log output.
     -- Currently, jobstart only functions with VimL code.
     -- https://github.com/neovim/neovim/issues/7607
-    local handle = io.popen([[hg log -l 100 -G -T '{node|short} {author} {date|isodate}
-{desc|fill68}
-<<<<<<<<<<files>>>>>>>>>>
-{files%"{status} {file}\n"}
-<<<<<<<<<<copies>>>>>>>>>>
-{file_copies%"{source}->{name}\n"}
-<<<<<<<<<<done>>>>>>>>>>']])
+    local handle = io.popen(hg_log_cmd)
     --local result = handle:read("*a")
     for line in handle:lines() do
         processLine(line)
@@ -357,6 +358,10 @@ local function go_status_file()
     vim.fn.execute("e " .. file)
 end
 
+local function set_log_command(cmd)
+    hg_log_cmd = cmd
+end
+
 return {
     HG_STATUS_FILETYPE = HG_STATUS_FILETYPE,
     HG_GRAPHLOG_FILETYPE = HG_GRAPHLOG_FILETYPE,
@@ -370,6 +375,7 @@ return {
     move_backward = move_backward,
     move_forward = move_forward,
     revert_file = revert_file,
+    set_log_command = set_log_command,
     status = status,
     toggle_file_select = toggle_file_select,
     update = update,
