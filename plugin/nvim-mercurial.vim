@@ -9,9 +9,9 @@
 
 lua nvimmercurial = require("nvimmercurial")
 
-command Hstatus lua nvimmercurial.status()
-command Hlog lua nvimmercurial.graph_log()
-command HgoStatusFile lua nvimmercurial.go_status_file()
+command! Hstatus lua nvimmercurial.status()
+command! Hlog lua nvimmercurial.graph_log()
+command! HgoStatusFile lua nvimmercurial.go_status_file()
 
 nmap <silent> <Space>hst :Hstatus<CR>
 
