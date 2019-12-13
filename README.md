@@ -26,3 +26,9 @@ nvim --cmd "set rtp+=./nvim-mercurial"
 luarocks install luacheck
 luacheck --config luachceck.lua lua
 ```
+
+Regenerate help tags:
+
+```
+:helptags ALL
+```
