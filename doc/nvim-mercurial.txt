@@ -1,25 +1,42 @@
-*nvim-mercurial.txt* A plugin for interacting with the Mercurial version control system.
+*nvim-mercurial.txt*                 To interact with Mercurial version control.
 
-====================================================================
-CONTENTS                                           *MercurialContents*
+================================================================================
+CONTENTS                                                     *mercurial-contents*
 
-    1. Usage ................ |MercurialUsage|
-    2. Mappings ............. |MercurialMappings|
-    3. Bugs ................. |MercurialBugs|
+    1. Usage ................ |mercurial-usage|
+    2. Commands ............. |mercurial-commands|
+    3. Maps ................. |mercurial-maps|
+    3. Bugs ................. |mercurial-bugs|
 
-====================================================================
-Section 1: Usage                                      *MercurialUsage*
+================================================================================
+Usage                                                           *mercurial-usage*
 
-This plugin provides an experience for interacting with a Mercurial
-repository that is integrated into Neovim.
+This plugin provides an experience for interacting with a Mercurial repository
+that is integrated into Neovim.
 
-====================================================================
-Section 2: Mappings                                 *MecurialMappings*
+================================================================================
+Commands                                                      *mercurial-commands*
 
 Hstatus - show the status of the current repository.
 Hlog    - show the commit log of the current repository.
 
-====================================================================
-Section 3: Bugs                                         *MecurialBugs*
+================================================================================
+Maps                                                              *mercurial-maps*
+
+These maps are available in :Hstatus buffers.
+
+Status maps
+
+                                                         *mercurial_c*
+c                 Commit selected files, or added files if no files are
+                  selected.
+
+                                                         *mercurial_a*
+a                 Add selected files, or add the file under the cursor, if the
+                  file under the cursor is not managed by Mercurial.
+
+================================================================================
+Bugs                                                              *mercurial-bugs*
 
 Report any problems at https://github.com/jacobsimpson/nvim-mercurial.
+
