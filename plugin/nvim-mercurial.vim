@@ -32,6 +32,7 @@ nmap <silent> <Space>ham :call mercurial#Amend()<CR>
 nmap <silent> <Space>hsu :call mercurial#SyncUpload()<CR>
 nmap <silent> <Space>huc :silent !hg uploadchain<CR>
 
+autocmd FileType hgst nnoremap <buffer> <silent> h? :help mercurial<CR>
 autocmd FileType hgst nnoremap <buffer> <ESC> :bd<CR>
 autocmd FileType hgst nnoremap <buffer> q :bd<CR>
 
