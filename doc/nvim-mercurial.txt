@@ -3,10 +3,10 @@
 ================================================================================
 CONTENTS                                                     *mercurial-contents*
 
-    1. Usage ................ |mercurial-usage|
-    2. Commands ............. |mercurial-commands|
-    3. Maps ................. |mercurial-maps|
-    3. Bugs ................. |mercurial-bugs|
+    1. Usage ........................................... |mercurial-usage|
+    2. Commands ........................................ |mercurial-commands|
+    3. Maps ............................................ |mercurial-maps|
+    3. Bugs ............................................ |mercurial-bugs|
 
 ================================================================================
 Usage                                                           *mercurial-usage*
