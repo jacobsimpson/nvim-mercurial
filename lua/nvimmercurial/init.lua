@@ -41,7 +41,7 @@ local function load_status()
     handle:close()
 
     for _, v in ipairs(vim.split(result, "\n")) do
-        if string.len(vim.trim(result)) > 0 then
+        if string.len(vim.trim(v)) > 0 then
             local f = {
               selected = false,
               status = string.sub(v, 1, 1),
