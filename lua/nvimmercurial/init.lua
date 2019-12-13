@@ -17,10 +17,10 @@ local function commit()
 end
 
 -- If the current buffer is a status buffer, check which file currently has the
--- cursor bside it, and return that. This way, the cursor can be restored to
+-- cursor beside it, and return that. This way, the cursor can be restored to
 -- the same file after the status has been updated. Sometimes a status update
 -- can cause files to be reordered.
-local function store_active_file()
+local function get_active_file()
     local buf = vim.api.nvim_get_current_buf()
     if vim.api.nvim_buf_get_option(buf, 'filetype') ~= HG_STATUS_FILETYPE then
         return nil
@@ -112,12 +112,12 @@ local function add_file()
     -- natively available from Lua, so usin the native Lua version for the
     -- moment. The native Lua version does not have an option to read stdout
     -- and stderr.
-    local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
-    local handle = io.popen("hg add " .. files[cursor[1]]['filename'])
+    local file = get_active_file()
+    local handle = io.popen("hg add " .. file)
     handle:read("*a")
     handle:close()
 
-    local active = store_active_file()
+    local active = get_active_file()
     load_status()
     show_status()
     restore_active_file(active)
@@ -128,12 +128,12 @@ local function revert_file()
     -- natively available from Lua, so usin the native Lua version for the
     -- moment. The native Lua version does not have an option to read stdout
     -- and stderr.
-    local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
-    local handle = io.popen("hg revert " .. files[cursor[1]]['filename'])
+    local file = get_active_file()
+    local handle = io.popen("hg revert " .. file)
     handle:read("*a")
     handle:close()
 
-    local active = store_active_file()
+    local active = get_active_file()
     load_status()
     show_status()
     restore_active_file(active)
@@ -338,7 +338,7 @@ local function fold_open()
 end
 
 local function status()
-    local active = store_active_file()
+    local active = get_active_file()
     load_status()
     show_status()
     restore_active_file(active)
@@ -352,6 +352,11 @@ local function move_backward()
     vim.fn.search("[@ox]  [0-9a-f]* ", "bW")
 end
 
+local function go_status_file()
+    local file = get_active_file()
+    vim.fn.execute("e " .. file)
+end
+
 return {
     HG_STATUS_FILETYPE = HG_STATUS_FILETYPE,
     HG_GRAPHLOG_FILETYPE = HG_GRAPHLOG_FILETYPE,
@@ -360,6 +365,7 @@ return {
     commit = commit,
     fold_close = fold_close,
     fold_open = fold_open,
+    go_status_file = go_status_file,
     graph_log = graph_log,
     move_backward = move_backward,
     move_forward = move_forward,

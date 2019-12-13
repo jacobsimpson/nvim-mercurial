@@ -11,6 +11,7 @@ lua nvimmercurial = require("nvimmercurial")
 
 command Hstatus lua nvimmercurial.status()
 command Hlog lua nvimmercurial.graph_log()
+command HgoStatusFile lua nvimmercurial.go_status_file()
 
 nmap <silent> <Space>hst :Hstatus<CR>
 
@@ -19,6 +20,10 @@ augroup nvimmercurial
   autocmd FileType hgstatus nnoremap <silent> <buffer> <Space> :lua nvimmercurial.toggle_file_select()<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> a :lua nvimmercurial.add_file()<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> r :lua nvimmercurial.revert_file()<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> h? :help mercurial-maps<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> gf :HgoStatusFile<CR>
+
+  " The different kinds of ways to quit the hgstatus window.
   autocmd FileType hgstatus nnoremap <silent> <buffer> <ESC> :bd<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> <C-C> :bd<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> q :bd<CR>
@@ -31,10 +36,6 @@ nmap <silent> <Space>hhec :silent !hg histedit --continue<CR>
 nmap <silent> <Space>ham :call mercurial#Amend()<CR>
 nmap <silent> <Space>hsu :call mercurial#SyncUpload()<CR>
 nmap <silent> <Space>huc :silent !hg uploadchain<CR>
-
-autocmd FileType hgst nnoremap <buffer> <silent> h? :help mercurial<CR>
-autocmd FileType hgst nnoremap <buffer> <ESC> :bd<CR>
-autocmd FileType hgst nnoremap <buffer> q :bd<CR>
 
 autocmd FileType hglog nnoremap <buffer> <silent> <ESC> :bd<CR>
 autocmd FileType hglog nnoremap <buffer> <silent> <C-c> :bd<CR>
