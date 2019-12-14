@@ -359,7 +359,7 @@ local function fold_open()
     end
 end
 
-local function status()
+local function status_open()
     local active = get_active_file()
     load_status()
     show_status()
@@ -397,7 +397,7 @@ return {
     move_forward = move_forward,
     revert_file = revert_file,
     set_log_command = set_log_command,
-    status = status,
+    status_open = status_open,
     toggle_file_select = toggle_file_select,
     update = update,
 }

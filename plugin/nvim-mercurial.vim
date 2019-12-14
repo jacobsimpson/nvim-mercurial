@@ -9,7 +9,7 @@
 
 lua nvimmercurial = require("nvimmercurial")
 
-command! Hstatus lua nvimmercurial.status()
+command! Hstatus lua nvimmercurial.status_open()
 command! Hlog lua nvimmercurial.graph_log()
 command! HgoStatusFile lua nvimmercurial.go_status_file()
 
