@@ -14,8 +14,9 @@ local hg_log_cmd = [[hg log -l 100 -G -T '{node|short} {author} {date|isodate}
 <<<<<<<<<<copies>>>>>>>>>>
 {file_copies%"{source}->{name}\n"}
 <<<<<<<<<<done>>>>>>>>>>']]
-local files = {}
-local statusBuffer = -1
+local status_details = {}
+local mercurial_buf = -1
+local mercurial_win = -1
 
 local function commit()
     -- Commit selected files, or if there are no files selected, commit all changes.
@@ -34,10 +35,10 @@ local function get_active_file()
     end
     local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
     local row = cursor[1]
-    if files[row] == nil then
+    if status_details[row] == nil then
         return nil
     end
-    return files[row]['filename']
+    return status_details[row]['filename']
 end
 
 local function load_status()
@@ -60,31 +61,43 @@ local function load_status()
     end
 
     -- Transfer the selected status from the previous list of files.
-    for _, f in ipairs(files) do
+    for _, f in ipairs(status_details) do
         local i = indexed[f['filename']]
         if i ~= nil then
             i['selected'] = f['selected']
         end
     end
 
-    files = new_files
+    status_details = new_files
 end
 
 local function get_status_buffer()
-    if not vim.api.nvim_buf_is_loaded(statusBuffer) then
-        statusBuffer = borderwin.new()
+    if not vim.api.nvim_buf_is_loaded(mercurial_buf) then
+        mercurial_buf, mercurial_win = borderwin.new()
         -- Open a split and switch to the buffer.
-        --vim.api.nvim_command("split | b" .. statusBuffer)
-        vim.api.nvim_buf_set_option(statusBuffer, 'buftype', 'nofile')
-        vim.api.nvim_buf_set_option(statusBuffer, 'filetype', HG_STATUS_FILETYPE)
-        vim.api.nvim_buf_set_name(statusBuffer, 'hg status')
+        --vim.api.nvim_command("split | b" .. mercurial_buf)
+        vim.api.nvim_buf_set_option(mercurial_buf, 'buftype', 'nofile')
+        vim.api.nvim_buf_set_option(mercurial_buf, 'filetype', HG_STATUS_FILETYPE)
+        vim.api.nvim_buf_set_name(mercurial_buf, 'hg status')
     end
-    return statusBuffer
+    return mercurial_buf, mercurial_win
+end
+
+local function get_log_buffer()
+    if not vim.api.nvim_buf_is_loaded(mercurial_buf) then
+        mercurial_buf, mercurial_win = borderwin.new()
+        -- Open a split and switch to the buffer.
+        --vim.api.nvim_command("split | b" .. mercurial_buf)
+        vim.api.nvim_buf_set_option(mercurial_buf, 'buftype', 'nofile')
+        vim.api.nvim_buf_set_option(mercurial_buf, 'filetype', HG_GRAPHLOG_FILETYPE)
+        vim.api.nvim_buf_set_name(mercurial_buf, 'hg log')
+    end
+    return mercurial_buf, mercurial_win
 end
 
 local function show_status()
     local lines = {}
-    for _, f in ipairs(files) do
+    for _, f in ipairs(status_details) do
         table.insert(lines, string.format(" [%s] %s %s",
             f['selected'] and 'X' or ' ',
             f['status'],
@@ -104,7 +117,7 @@ end
 local function restore_active_file(active)
     local cursor = {1, 2}
     if active ~= nil then
-        for i, f in ipairs(files) do
+        for i, f in ipairs(status_details) do
             if f['filename'] == active then
                 cursor[1] = i
                 break
@@ -165,7 +178,7 @@ end
 
 local function toggle_file_select()
     local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
-    files[cursor[1]]['selected'] = not files[cursor[1]]['selected']
+    status_details[cursor[1]]['selected'] = not status_details[cursor[1]]['selected']
     show_status()
 end
 
@@ -257,7 +270,7 @@ end
 
 local function graph_log()
     print("Loading ...")
-    local buf, win = borderwin.new()
+    local buf, win = get_log_buffer()
     vim.api.nvim_buf_set_option(buf, 'modifiable', true)
     vim.api.nvim_buf_set_option(buf, 'filetype', HG_GRAPHLOG_FILETYPE)
     vim.api.nvim_win_set_option(win, 'foldtext', 'MercurialFoldText()')
@@ -350,11 +363,11 @@ local function status()
 end
 
 local function move_forward()
-    vim.fn.search("[@ox]  [0-9a-f]* ", "W")
+    vim.fn.search("[@ox][ |]*  [0-9a-f]* ", "W")
 end
 
 local function move_backward()
-    vim.fn.search("[@ox]  [0-9a-f]* ", "bW")
+    vim.fn.search("[@ox][ |]*  [0-9a-f]* ", "bW")
 end
 
 local function go_status_file()
