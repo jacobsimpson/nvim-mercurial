@@ -1,10 +1,10 @@
 local borderwin = require("nvime/borderwin")
 local hglog = require("nvimmercurial/hglog")
+local status = require("nvimmercurial/status")
 local highlight = require("nvime/highlight")
 
 -- nvim_subscribe might help me receive an rpcnotify.
 
-local HG_STATUS_FILETYPE = 'hgstatus'
 local HG_GRAPHLOG_FILETYPE = 'hglog'
 
 local hg_log_cmd = [[hg log -l 100 -G -T '{node|short} {author} {date|isodate}
@@ -14,74 +14,8 @@ local hg_log_cmd = [[hg log -l 100 -G -T '{node|short} {author} {date|isodate}
 <<<<<<<<<<copies>>>>>>>>>>
 {file_copies%"{source}->{name}\n"}
 <<<<<<<<<<done>>>>>>>>>>']]
-local status_details = {}
 local mercurial_buf = -1
 local mercurial_win = -1
-
-local function commit()
-    -- Commit selected files, or if there are no files selected, commit all changes.
-    -- HGEDITOR=<something to invoke this instance of Neovim.> hg commit
-    -- Close the existing status window.
-end
-
--- If the current buffer is a status buffer, check which file currently has the
--- cursor beside it, and return that. This way, the cursor can be restored to
--- the same file after the status has been updated. Sometimes a status update
--- can cause files to be reordered.
-local function get_active_file()
-    local buf = vim.api.nvim_get_current_buf()
-    if vim.api.nvim_buf_get_option(buf, 'filetype') ~= HG_STATUS_FILETYPE then
-        return nil
-    end
-    local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
-    local row = cursor[1]
-    if status_details[row] == nil then
-        return nil
-    end
-    return status_details[row]['filename']
-end
-
-local function load_status()
-    local new_files = {}
-    local indexed = {}
-    local handle = io.popen("hg status")
-    local result = handle:read("*a")
-    handle:close()
-
-    for _, v in ipairs(vim.split(result, "\n")) do
-        if string.len(vim.trim(v)) > 0 then
-            local f = {
-              selected = false,
-              status = string.sub(v, 1, 1),
-              filename = string.sub(v, 3),
-            }
-            table.insert(new_files, f)
-            indexed[f['filename']] = f
-        end
-    end
-
-    -- Transfer the selected status from the previous list of files.
-    for _, f in ipairs(status_details) do
-        local i = indexed[f['filename']]
-        if i ~= nil then
-            i['selected'] = f['selected']
-        end
-    end
-
-    status_details = new_files
-end
-
-local function get_status_buffer()
-    if not vim.api.nvim_buf_is_loaded(mercurial_buf) then
-        mercurial_buf, mercurial_win = borderwin.new()
-        -- Open a split and switch to the buffer.
-        --vim.api.nvim_command("split | b" .. mercurial_buf)
-        vim.api.nvim_buf_set_option(mercurial_buf, 'buftype', 'nofile')
-        vim.api.nvim_buf_set_option(mercurial_buf, 'filetype', HG_STATUS_FILETYPE)
-        vim.api.nvim_buf_set_name(mercurial_buf, 'hg status')
-    end
-    return mercurial_buf, mercurial_win
-end
 
 local function get_log_buffer()
     if not vim.api.nvim_buf_is_loaded(mercurial_buf) then
@@ -93,70 +27,6 @@ local function get_log_buffer()
         vim.api.nvim_buf_set_name(mercurial_buf, 'hg log')
     end
     return mercurial_buf, mercurial_win
-end
-
-local function show_status()
-    local lines = {}
-    for _, f in ipairs(status_details) do
-        table.insert(lines, string.format(" [%s] %s %s",
-            f['selected'] and 'X' or ' ',
-            f['status'],
-            f['filename']))
-    end
-
-    local buf = get_status_buffer()
-    vim.api.nvim_buf_set_option(buf, 'modifiable', true)
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-    vim.api.nvim_buf_set_option(buf, 'modifiable', false)
-end
-
--- If a file is passed in, look for that file in the current status buffer, and
--- put the cursor bside it. If there is no active file passed in, or the active
--- file is no longer in the status output, the cursor will end up on the first
--- file.
-local function restore_active_file(active)
-    local cursor = {1, 2}
-    if active ~= nil then
-        for i, f in ipairs(status_details) do
-            if f['filename'] == active then
-                cursor[1] = i
-                break
-            end
-        end
-    end
-    vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), cursor)
-end
-
-local function add_file()
-    -- As far as I can tell, the neovim job control functions are not yet
-    -- natively available from Lua, so usin the native Lua version for the
-    -- moment. The native Lua version does not have an option to read stdout
-    -- and stderr.
-    local file = get_active_file()
-    local handle = io.popen("hg add " .. file)
-    handle:read("*a")
-    handle:close()
-
-    local active = get_active_file()
-    load_status()
-    show_status()
-    restore_active_file(active)
-end
-
-local function revert_file()
-    -- As far as I can tell, the neovim job control functions are not yet
-    -- natively available from Lua, so usin the native Lua version for the
-    -- moment. The native Lua version does not have an option to read stdout
-    -- and stderr.
-    local file = get_active_file()
-    local handle = io.popen("hg revert " .. file)
-    handle:read("*a")
-    handle:close()
-
-    local active = get_active_file()
-    load_status()
-    show_status()
-    restore_active_file(active)
 end
 
 -- This should be replaced by vim.gsplit or vim.split.
@@ -175,12 +45,6 @@ end
 --local function trim(s)
 --   return (s:gsub("^%s*(.-)%s*$", "%1"))
 --end
-
-local function toggle_file_select()
-    local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
-    status_details[cursor[1]]['selected'] = not status_details[cursor[1]]['selected']
-    show_status()
-end
 
 -- Sends a request to a remote Neovim instance for a commit message to be
 -- entered, and waits for that buffer to be closed.
@@ -295,6 +159,7 @@ end
 
 local function graph_log()
     print("Loading ...")
+    status.close()
     local buf, win = get_log_buffer()
     vim.api.nvim_buf_set_option(buf, 'filetype', HG_GRAPHLOG_FILETYPE)
     vim.api.nvim_win_set_option(win, 'foldtext', 'MercurialFoldText()')
@@ -359,13 +224,6 @@ local function fold_open()
     end
 end
 
-local function status_open()
-    local active = get_active_file()
-    load_status()
-    show_status()
-    restore_active_file(active)
-end
-
 local function move_forward()
     vim.fn.search("[o@_x*+][ |]*  [0-9a-f]* ", "W")
 end
@@ -374,30 +232,19 @@ local function move_backward()
     vim.fn.search("[o@_x*+][ |]*  [0-9a-f]* ", "bW")
 end
 
-local function go_status_file()
-    local file = get_active_file()
-    vim.fn.execute("e " .. file)
-end
-
 local function set_log_command(cmd)
     hg_log_cmd = cmd
 end
 
 return {
-    HG_STATUS_FILETYPE = HG_STATUS_FILETYPE,
+    status = status,
     HG_GRAPHLOG_FILETYPE = HG_GRAPHLOG_FILETYPE,
 
-    add_file = add_file,
-    commit = commit,
     fold_close = fold_close,
     fold_open = fold_open,
-    go_status_file = go_status_file,
     graph_log = graph_log,
     move_backward = move_backward,
     move_forward = move_forward,
-    revert_file = revert_file,
     set_log_command = set_log_command,
-    status_open = status_open,
-    toggle_file_select = toggle_file_select,
     update = update,
 }
