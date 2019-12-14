@@ -22,6 +22,10 @@ function Commit:setIndentation(indentation)
     self.indentation = indentation
 end
 
+function Commit:getIndentation()
+    return self.indentation
+end
+
 function Commit:setComplete()
     self.complete = true
 end

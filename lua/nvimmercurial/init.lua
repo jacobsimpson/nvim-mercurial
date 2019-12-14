@@ -232,25 +232,27 @@ local function start(processLine)
 end
 
 local function update()
-  print("Updating...")
-  local currentLine = vim.fn.getline(".")
-  local commit = vim.fn.matchstr(currentLine, '^[:| ]*[@*ox]  [0-9a-f]* ')
-  if vim.fn.empty(commit) ~= 0 then
---    throw "Not a valid commit line. Can not update."
-      print("Not a valid commit line. Can not update.")
-      return
-  end
-  commit = vim.fn.matchstr(commit, string.rep('[0-9a-f]', 12))
-  print ("commit = " .. commit)
-  local output = vim.fn.system('hg update ' .. commit)
-  if vim.api.nvim_get_vvar("shell_error") ~= 0 then
-    vim.api.nvim_command("redraw")
-    print(output)
-  else
-    vim.api.nvim_command("redraw")
-    print("Updated!")
-    vim.api.nvim_command(':bd')
-  end
+    print("Updating...")
+    local currentLine = vim.fn.getline(".")
+    local commit = vim.fn.matchstr(currentLine, '^[:| ]*[@*ox]  [0-9a-f]* ')
+    if vim.fn.empty(commit) ~= 0 then
+  --    throw "Not a valid commit line. Can not update."
+        print("Not a valid commit line. Can not update.")
+        return
+    end
+    commit = vim.fn.matchstr(commit, string.rep('[0-9a-f]', 12))
+    print ("commit = " .. commit)
+    print('hg update ' .. commit)
+    --local output = vim.fn.system('hg update ' .. commit)
+--    local output = ""
+--    if vim.api.nvim_get_vvar("shell_error") ~= 0 then
+--      vim.api.nvim_command("redraw")
+--      print(output)
+--    else
+--      vim.api.nvim_command("redraw")
+--      print("Updated!")
+--      vim.api.nvim_command(':bd')
+--    end
 end
 
 local function graph_log()
@@ -290,9 +292,11 @@ local function graph_log()
             vim.api.nvim_buf_set_lines(buf, beginning, -1, false, lines)
 
             -- Add some syntax highlighting.
-            vim.api.nvim_buf_add_highlight(buf, -1, "Constant", first, 3, 15)
+            local indent = string.len(commit:getIndentation())
+            print("indent = '" .. commit:getIndentation() .. "', len = " .. indent)
+            vim.api.nvim_buf_add_highlight(buf, -1, "Constant", first, indent, indent+12)
             local loc = string.find(lines[1], ">")
-            vim.api.nvim_buf_add_highlight(buf, -1, "Statement", first, 16, loc)
+            vim.api.nvim_buf_add_highlight(buf, -1, "Statement", first, indent+13, loc)
 
             -- Add folds.
             local foldRange = commit:GetFileFold()
