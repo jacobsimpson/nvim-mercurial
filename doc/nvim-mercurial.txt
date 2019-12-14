@@ -25,15 +25,19 @@ Maps                                                              *mercurial-map
 
 These maps are available in :Hstatus buffers.
 
-Status maps
 
-                                                         *mercurial_c*
-c                 Commit selected files, or added files if no files are
+Status maps                                                *mercurial-status-maps*
+
+                                                                    *mercurial_cc*
+cc                Commit selected files, or added files if no files are
                   selected.
 
-                                                         *mercurial_a*
+                                                                     *mercurial_a*
 a                 Add selected files, or add the file under the cursor, if the
                   file under the cursor is not managed by Mercurial.
+
+                                                                     *mercurial_r*
+r                 Revert selected files, or revert the file under the cursor.
 
 ================================================================================
 Bugs                                                              *mercurial-bugs*
