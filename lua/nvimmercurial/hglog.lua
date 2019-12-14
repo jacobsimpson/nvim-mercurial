@@ -34,6 +34,11 @@ function Commit:isComplete()
     return self.complete
 end
 
+function Commit:isWorking()
+    local s = vim.fn.matchstr(self.summary, '^[:| ]*@[:| ]*  [0-9a-f]* ')
+    return #s > 0
+end
+
 function Commit:addFile(file)
     return table.insert(self.files, file)
 end

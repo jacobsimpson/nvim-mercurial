@@ -244,57 +244,18 @@ local function start(processLine)
     handle:close()
 end
 
-local function update()
-    print("Updating...")
-    local currentLine = vim.fn.getline(".")
-    local commit = vim.fn.matchstr(currentLine, '^[:| ]*[@*ox]  [0-9a-f]* ')
-    if vim.fn.empty(commit) ~= 0 then
-  --    throw "Not a valid commit line. Can not update."
-        print("Not a valid commit line. Can not update.")
-        return
-    end
-    commit = vim.fn.matchstr(commit, string.rep('[0-9a-f]', 12))
-    print ("commit = " .. commit)
-    print('hg update ' .. commit)
-    --local output = vim.fn.system('hg update ' .. commit)
---    local output = ""
---    if vim.api.nvim_get_vvar("shell_error") ~= 0 then
---      vim.api.nvim_command("redraw")
---      print(output)
---    else
---      vim.api.nvim_command("redraw")
---      print("Updated!")
---      vim.api.nvim_command(':bd')
---    end
-end
-
-local function graph_log()
-    print("Loading ...")
-    local buf, win = get_log_buffer()
+local function refresh_graph_log(buf, win)
     vim.api.nvim_buf_set_option(buf, 'modifiable', true)
-    vim.api.nvim_buf_set_option(buf, 'filetype', HG_GRAPHLOG_FILETYPE)
-    vim.api.nvim_win_set_option(win, 'foldtext', 'MercurialFoldText()')
-    vim.api.nvim_win_set_option(win, 'fillchars', 'fold: ')
-    vim.api.nvim_win_set_option(win, 'foldcolumn', 0)
-
-    -- The existing Fold highlight should be preserved and restored when
-    -- the buffer closes.
-    local folded = vim.fn.substitute(vim.trim(vim.fn.execute("highlight Folded")), " xxx ", "", "")
-    vim.api.nvim_command('autocmd BufLeave <buffer> highlight ' .. folded)
-
-    -- Make the Folded highlight the same as the Normal highlight so that a
-    -- Mercurial log will look normal and readable, less distraction, but
-    -- additional detail is available on request.
-    local normal = highlight.get_highlight("Normal")
-    highlight.set_highlight("Folded", normal)
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, {})
 
     local parse = hglog.Parser()
 
+    local beginning = 0
+    local first = 0
+    local line_count = 0
     -- I would much prefer to use `jobstart` here, rather than my own
     -- implementation backed by the Lua `system` call, but `jobstart` is not
     -- yet supported in Lua.
-    local beginning = 0
-    local first = 0
     start(function(line)
         local commit = parse(line)
         -- Parse will only return a result when a full commit is available to
@@ -302,11 +263,15 @@ local function graph_log()
         if commit ~= nil then
             -- Append the text.
             local lines = commit:Lines()
+            local indent = string.len(commit:getIndentation())
             vim.api.nvim_buf_set_lines(buf, beginning, -1, false, lines)
+            -- Adjust the cursor position to the location of the current commit.
+            if commit:isWorking() then
+                vim.api.nvim_win_set_cursor(win, {line_count + 1, indent - 3})
+            end
+            line_count = line_count + #lines
 
             -- Add some syntax highlighting.
-            local indent = string.len(commit:getIndentation())
-            print("indent = '" .. commit:getIndentation() .. "', len = " .. indent)
             vim.api.nvim_buf_add_highlight(buf, -1, "Constant", first, indent, indent+12)
             local loc = string.find(lines[1], ">")
             vim.api.nvim_buf_add_highlight(buf, -1, "Statement", first, indent+13, loc)
@@ -326,17 +291,56 @@ local function graph_log()
     end)
 
     vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+end
+
+local function graph_log()
+    print("Loading ...")
+    local buf, win = get_log_buffer()
+    vim.api.nvim_buf_set_option(buf, 'filetype', HG_GRAPHLOG_FILETYPE)
+    vim.api.nvim_win_set_option(win, 'foldtext', 'MercurialFoldText()')
+    vim.api.nvim_win_set_option(win, 'fillchars', 'fold: ')
+    vim.api.nvim_win_set_option(win, 'foldcolumn', 0)
+
+    -- The existing Fold highlight should be preserved and restored when
+    -- the buffer closes.
+    local folded = vim.fn.substitute(vim.trim(vim.fn.execute("highlight Folded")), " xxx ", "", "")
+    vim.api.nvim_command('autocmd BufLeave <buffer> highlight ' .. folded)
+
+    -- Make the Folded highlight the same as the Normal highlight so that a
+    -- Mercurial log will look normal and readable, less distraction, but
+    -- additional detail is available on request.
+    local normal = highlight.get_highlight("Normal")
+    highlight.set_highlight("Folded", normal)
+
+    refresh_graph_log(buf, win)
+
     -- Set the buffer so the text doesn't wrap to the next line if it is longer
     -- than the width of the buffer.
     vim.api.nvim_win_set_option(win, 'wrap', false)
     -- Set the buffer so that searches don't wrap off the bottom of the buffer
     -- around to the top again.
-    --vim.api.nvim_command("set nowrapscan")
     vim.api.nvim_set_option("wrapscan", false)
-    vim.api.nvim_win_set_cursor(win, {1, 1})
     vim.api.nvim_command("redraw")
     print(" ")
-    --exe '/\v[@]  [0-9a-f]* jacobsimpson.*|[@]  [0-9a-f]* .*p4head'
+end
+
+local function update()
+    print("Updating...")
+    local currentLine = vim.fn.getline(".")
+    local commit = vim.fn.matchstr(currentLine, '^[:| ]*[o@_x*+][:| ]*  [0-9a-f]* ')
+    if vim.fn.empty(commit) ~= 0 then
+        print("Not a valid commit line. Can not update.")
+        return
+    end
+    commit = vim.fn.matchstr(commit, string.rep('[0-9a-f]', 12))
+    local output = vim.fn.system('hg update ' .. commit)
+    if vim.api.nvim_get_vvar("shell_error") ~= 0 then
+      vim.api.nvim_command("redraw")
+      print(output)
+    else
+      vim.api.nvim_command("redraw")
+    end
+    refresh_graph_log()
 end
 
 local function fold_close()
@@ -363,11 +367,11 @@ local function status()
 end
 
 local function move_forward()
-    vim.fn.search("[@ox][ |]*  [0-9a-f]* ", "W")
+    vim.fn.search("[o@_x*+][ |]*  [0-9a-f]* ", "W")
 end
 
 local function move_backward()
-    vim.fn.search("[@ox][ |]*  [0-9a-f]* ", "bW")
+    vim.fn.search("[o@_x*+][ |]*  [0-9a-f]* ", "bW")
 end
 
 local function go_status_file()
