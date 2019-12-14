@@ -52,19 +52,22 @@ augroup nvimmercurial_hglog
 augroup END
 
 " Special behavior when editing hgcommit messages.
-autocmd FileType hgcommit nnoremap <buffer> <silent> <C-c>  ggdG:wq<CR>
-autocmd FileType hgcommit nnoremap <buffer> <silent> gr  /^R=<CR>:nohlsearch<CR>$T=
-autocmd FileType hgcommit nnoremap <buffer> <silent> cir  /^R=<CR>f=:nohlsearch<CR>C=
-autocmd FileType hgcommit nnoremap <buffer> <silent> dir  /^R=<CR>f=:nohlsearch<CR>C=<ESC>
-autocmd FileType hgcommit nnoremap <buffer> <silent> gb  /^BUG=<CR>:nohlsearch<CR>$T=
-autocmd FileType hgcommit nnoremap <buffer> <silent> cib  /^BUG=<CR>f=:nohlsearch<CR>C=
-autocmd FileType hgcommit nnoremap <buffer> <silent> dib  /^BUG=<CR>f=:nohlsearch<CR>C=<ESC>
-autocmd FileType hgcommit nnoremap <buffer> <silent> gt  /^TESTED=<CR>:nohlsearch<CR>$T=
-autocmd FileType hgcommit nnoremap <buffer> <silent> cit  /^TESTED=<CR>f=:nohlsearch<CR>C=
-autocmd FileType hgcommit nnoremap <buffer> <silent> dit  /^TESTED=<CR>f=:nohlsearch<CR>C=<ESC>
-autocmd FileType hgcommit nnoremap <buffer> <silent> gc  /^CC=<CR>:nohlsearch<CR>$T=
-autocmd FileType hgcommit nnoremap <buffer> <silent> cic  /^CC=<CR>f=:nohlsearch<CR>C=
-autocmd FileType hgcommit nnoremap <buffer> <silent> dic  /^CC=<CR>f=:nohlsearch<CR>C=<ESC>
+augroup nvimmercurial_hgcommit
+  au!
+  autocmd FileType hgcommit nnoremap <buffer> <silent> <C-c>  ggdG:wq<CR>
+  autocmd FileType hgcommit nnoremap <buffer> <silent> gr  /^R=<CR>:nohlsearch<CR>$T=
+  autocmd FileType hgcommit nnoremap <buffer> <silent> cir  /^R=<CR>f=:nohlsearch<CR>C=
+  autocmd FileType hgcommit nnoremap <buffer> <silent> dir  /^R=<CR>f=:nohlsearch<CR>C=<ESC>
+  autocmd FileType hgcommit nnoremap <buffer> <silent> gb  /^BUG=<CR>:nohlsearch<CR>$T=
+  autocmd FileType hgcommit nnoremap <buffer> <silent> cib  /^BUG=<CR>f=:nohlsearch<CR>C=
+  autocmd FileType hgcommit nnoremap <buffer> <silent> dib  /^BUG=<CR>f=:nohlsearch<CR>C=<ESC>
+  autocmd FileType hgcommit nnoremap <buffer> <silent> gt  /^TESTED=<CR>:nohlsearch<CR>$T=
+  autocmd FileType hgcommit nnoremap <buffer> <silent> cit  /^TESTED=<CR>f=:nohlsearch<CR>C=
+  autocmd FileType hgcommit nnoremap <buffer> <silent> dit  /^TESTED=<CR>f=:nohlsearch<CR>C=<ESC>
+  autocmd FileType hgcommit nnoremap <buffer> <silent> gc  /^CC=<CR>:nohlsearch<CR>$T=
+  autocmd FileType hgcommit nnoremap <buffer> <silent> cic  /^CC=<CR>f=:nohlsearch<CR>C=
+  autocmd FileType hgcommit nnoremap <buffer> <silent> dic  /^CC=<CR>f=:nohlsearch<CR>C=<ESC>
+augroup END
 
 
 " Used as a callback for setting the fold text for hglog buffers.
