@@ -10,18 +10,17 @@
 lua nvimmercurial = require("nvimmercurial")
 
 command! Hstatus lua nvimmercurial.status.open()
-command! Hlog lua nvimmercurial.graph_log()
-command! HgoStatusFile lua nvimmercurial.status.go_status_file()
+command! Hlog lua nvimmercurial.graphlog.open()
 
 nmap <silent> <Space>hst :Hstatus<CR>
 
 augroup nvimmercurial
   au!
-  autocmd FileType hgstatus nnoremap <silent> <buffer> <Space> :lua nvimmercurial.toggle_file_select()<CR>
-  autocmd FileType hgstatus nnoremap <silent> <buffer> a :lua nvimmercurial.add_file()<CR>
-  autocmd FileType hgstatus nnoremap <silent> <buffer> r :lua nvimmercurial.revert_file()<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> <Space> :lua nvimmercurial.status.toggle_file_select()<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> a :lua nvimmercurial.status.add_file()<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> r :lua nvimmercurial.status.revert_file()<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> h? :help mercurial-maps<CR>
-  autocmd FileType hgstatus nnoremap <silent> <buffer> gf :HgoStatusFile<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> gf :lua nvimmercurial.status.go_status_file()<CR>
 
   " The different kinds of ways to quit the hgstatus window.
   autocmd FileType hgstatus nnoremap <silent> <buffer> <ESC> :bd<CR>
@@ -40,14 +39,14 @@ nmap <silent> <Space>huc :silent !hg uploadchain<CR>
 autocmd FileType hglog nnoremap <buffer> <silent> <ESC> :bd<CR>
 autocmd FileType hglog nnoremap <buffer> <silent> <C-c> :bd<CR>
 autocmd FileType hglog nnoremap <buffer> <silent> q :bd<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> u :lua nvimmercurial.update()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> u :lua nvimmercurial.graphlog.update()<CR>
 autocmd FileType hglog nnoremap <buffer> h gg/\v[@ox]  [0-9a-f]* .*p4head<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> { :lua nvimmercurial.move_backward()<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> [[ :lua nvimmercurial.move_backward()<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> } :lua nvimmercurial.move_forward()<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> ]] :lua nvimmercurial.move_forward()<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> zo :lua nvimmercurial.fold_open()<CR>
-autocmd FileType hglog nnoremap <buffer> <silent> zc :lua nvimmercurial.fold_close()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> { :lua nvimmercurial.graphlog.move_backward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> [[ :lua nvimmercurial.graphlog.move_backward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> } :lua nvimmercurial.graphlog.move_forward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> ]] :lua nvimmercurial.graphlog.move_forward()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> zo :lua nvimmercurial.graphlog.fold_open()<CR>
+autocmd FileType hglog nnoremap <buffer> <silent> zc :lua nvimmercurial.graphlog.fold_close()<CR>
 
 " Special behavior when editing hgcommit messages.
 autocmd FileType hgcommit nnoremap <buffer> <silent> <C-c>  ggdG:wq<CR>

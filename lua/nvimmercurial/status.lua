@@ -2,6 +2,7 @@ local borderwin = require("nvime/borderwin")
 
 local FILETYPE = 'hgstatus'
 
+local close_callback = nil
 local status_details = {}
 local mercurial_buf = -1
 local mercurial_win = -1
@@ -115,6 +116,9 @@ local function load_status()
 end
 
 local function open()
+    if close_callback ~= nil then
+        close_callback()
+    end
     local active = get_active_file()
     load_status()
     show_status()
@@ -162,6 +166,10 @@ local function close()
     end
 end
 
+local function register_close_callback(cb)
+    close_callback = cb
+end
+
 return {
     FILETYPE = FILETYPE,
 
@@ -170,6 +178,7 @@ return {
     commit = commit,
     go_status_file = go_status_file,
     open = open,
+    register_close_callback = register_close_callback,
     revert_file = revert_file,
     show_status = show_status,
     toggle_file_select = toggle_file_select,
