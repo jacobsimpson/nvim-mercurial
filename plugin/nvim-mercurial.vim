@@ -13,6 +13,12 @@ command! Hstatus lua nvimmercurial.status.open()
 command! Hlog lua nvimmercurial.graphlog.open()
 
 nmap <silent> <Space>hst :Hstatus<CR>
+nmap <silent> <Space>hl  :Hlog<CR>
+nmap <silent> <Space>hrm :call mercurial#Resolve()<CR>
+nmap <silent> <Space>hhec :silent !hg histedit --continue<CR>
+nmap <silent> <Space>ham :call mercurial#Amend()<CR>
+nmap <silent> <Space>hsu :call mercurial#SyncUpload()<CR>
+nmap <silent> <Space>huc :silent !hg uploadchain<CR>
 
 augroup nvimmercurial_hgstatus
   au!
@@ -27,14 +33,6 @@ augroup nvimmercurial_hgstatus
   autocmd FileType hgstatus nnoremap <silent> <buffer> <C-C> :bd<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> q :bd<CR>
 augroup END
-
-nmap <silent> <Space>hl :Hlog<CR>
-nmap <silent> <Space>hst :Hstatus<CR>
-nmap <silent> <Space>hrm :call mercurial#Resolve()<CR>
-nmap <silent> <Space>hhec :silent !hg histedit --continue<CR>
-nmap <silent> <Space>ham :call mercurial#Amend()<CR>
-nmap <silent> <Space>hsu :call mercurial#SyncUpload()<CR>
-nmap <silent> <Space>huc :silent !hg uploadchain<CR>
 
 augroup nvimmercurial_hglog
   au!
