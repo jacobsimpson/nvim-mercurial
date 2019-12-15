@@ -47,7 +47,7 @@ local function get_active_file()
     return status_details[row]['filename']
 end
 
-local function go_status_file()
+local function go_file()
     local file = get_active_file()
     vim.fn.execute("e " .. file)
 end
@@ -176,7 +176,7 @@ return {
     add_file = add_file,
     close = close,
     commit = commit,
-    go_status_file = go_status_file,
+    go_file = go_file,
     open = open,
     register_close_callback = register_close_callback,
     revert_file = revert_file,

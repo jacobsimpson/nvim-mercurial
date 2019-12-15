@@ -28,13 +28,16 @@ These maps are available in :Hstatus buffers.
 
 Status maps                                                *mercurial-status-maps*
 
+                                                                     *mercurial_a*
+a                 Add selected files, or add the file under the cursor, if the
+                  file under the cursor is not managed by Mercurial.
+
                                                                     *mercurial_cc*
 cc                Commit selected files, or added files if no files are
                   selected.
 
-                                                                     *mercurial_a*
-a                 Add selected files, or add the file under the cursor, if the
-                  file under the cursor is not managed by Mercurial.
+                                                                    *mercurial_gf*
+gf                Go to the file under the cursor.
 
                                                                      *mercurial_r*
 r                 Revert selected files, or revert the file under the cursor.

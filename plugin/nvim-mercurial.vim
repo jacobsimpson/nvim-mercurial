@@ -26,7 +26,7 @@ augroup nvimmercurial_hgstatus
   autocmd FileType hgstatus nnoremap <silent> <buffer> a :lua nvimmercurial.status.add_file()<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> r :lua nvimmercurial.status.revert_file()<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> h? :help mercurial-status-maps<CR>
-  autocmd FileType hgstatus nnoremap <silent> <buffer> gf :lua nvimmercurial.status.go_status_file()<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> gf :lua nvimmercurial.status.go_file()<CR>
 
   " The different kinds of ways to quit the hgstatus window.
   autocmd FileType hgstatus nnoremap <silent> <buffer> <ESC> :bd<CR>
