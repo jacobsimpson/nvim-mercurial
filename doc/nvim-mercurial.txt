@@ -42,6 +42,13 @@ gf                Go to the file under the cursor.
                                                                      *mercurial_r*
 r                 Revert selected files, or revert the file under the cursor.
 
+                                                                   *mercurial_czz*
+czz               Shelf existing uncommitted changes.
+
+                                                                   *mercurial_czp*
+czp               Pop topmost shelve.
+
+
 ================================================================================
 Bugs                                                              *mercurial-bugs*
 

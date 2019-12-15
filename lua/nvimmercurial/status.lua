@@ -64,7 +64,7 @@ local function get_status_buffer()
     return mercurial_buf, mercurial_win
 end
 
-local function show_status()
+local function refresh()
     local lines = {}
     for _, f in ipairs(status_details) do
         table.insert(lines, string.format(" [%s] %s %s",
@@ -82,7 +82,7 @@ end
 local function toggle_file_select()
     local cursor = vim.api.nvim_win_get_cursor(vim.api.nvim_get_current_win())
     status_details[cursor[1]]['selected'] = not status_details[cursor[1]]['selected']
-    show_status()
+    refresh()
 end
 
 local function load_status()
@@ -121,7 +121,7 @@ local function open()
     end
     local active = get_active_file()
     load_status()
-    show_status()
+    refresh()
     restore_active_file(active)
 end
 
@@ -137,7 +137,7 @@ local function revert_file()
 
     local active = get_active_file()
     load_status()
-    show_status()
+    refresh()
     restore_active_file(active)
 end
 
@@ -153,7 +153,7 @@ local function add_file()
 
     local active = get_active_file()
     load_status()
-    show_status()
+    refresh()
     restore_active_file(active)
 end
 
@@ -170,6 +170,30 @@ local function register_close_callback(cb)
     close_callback = cb
 end
 
+local function shelve()
+  local output = vim.fn.system('hg shelve')
+  if vim.api.nvim_get_vvar("shell_error") ~= 0 then
+    vim.api.nvim_command("redraw")
+    print(output)
+  else
+    vim.api.nvim_command("redraw")
+    load_status()
+    refresh()
+  end
+end
+
+local function unshelve()
+  local output = vim.fn.system('hg unshelve')
+  if vim.api.nvim_get_vvar("shell_error") ~= 0 then
+    vim.api.nvim_command("redraw")
+    print(output)
+  else
+    vim.api.nvim_command("redraw")
+    load_status()
+    refresh()
+  end
+end
+
 return {
     FILETYPE = FILETYPE,
 
@@ -180,6 +204,8 @@ return {
     open = open,
     register_close_callback = register_close_callback,
     revert_file = revert_file,
-    show_status = show_status,
+    refresh = refresh,
     toggle_file_select = toggle_file_select,
+    shelve = shelve,
+    unshelve = unshelve,
 }
