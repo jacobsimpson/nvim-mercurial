@@ -7,6 +7,18 @@ local status_details = {}
 local mercurial_buf = -1
 local mercurial_win = -1
 
+function join(list, delimiter)
+  local len = #list
+  if len == 0 then
+    return ""
+  end
+  local s = list[1]
+  for i = 2, len do
+    s = s .. delimiter .. list[i]
+  end
+  return s
+end
+
 local function commit()
     -- Commit selected files, or if there are no files selected, commit all changes.
     -- HGEDITOR=<something to invoke this instance of Neovim.> hg commit
@@ -170,16 +182,28 @@ local function register_close_callback(cb)
     close_callback = cb
 end
 
+local function get_selected_files()
+    local selected_files = {}
+    for _, f in ipairs(status_details) do
+        if f['selected'] then
+            table.insert(selected_files, f['filename'])
+        end
+    end
+    return selected_files
+end
+
 local function shelve()
-  local output = vim.fn.system('hg shelve')
-  if vim.api.nvim_get_vvar("shell_error") ~= 0 then
-    vim.api.nvim_command("redraw")
-    print(output)
-  else
-    vim.api.nvim_command("redraw")
-    load_status()
-    refresh()
-  end
+    local selected_files = get_selected_files()
+    local files = table.concat(selected_files, " ")
+    local output = vim.fn.system('hg shelve ' .. files)
+    if vim.api.nvim_get_vvar("shell_error") ~= 0 then
+        vim.api.nvim_command("redraw")
+        print(output)
+    else
+        vim.api.nvim_command("redraw")
+        load_status()
+        refresh()
+    end
 end
 
 local function unshelve()
