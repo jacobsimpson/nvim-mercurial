@@ -27,6 +27,7 @@ augroup nvimmercurial_hgstatus
   autocmd FileType hgstatus nnoremap <silent> <buffer> r :lua nvimmercurial.status.revert_file()<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> h? :help mercurial-status-maps<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> gf :lua nvimmercurial.status.go_file()<CR>
+  autocmd FileType hgstatus nnoremap <silent> <buffer> cc :lua nvimmercurial.status.commit()<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> czz :lua nvimmercurial.status.shelve()<CR>
   autocmd FileType hgstatus nnoremap <silent> <buffer> czp :lua nvimmercurial.status.unshelve()<CR>
 
