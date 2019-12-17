@@ -11,6 +11,7 @@ lua nvimmercurial = require("nvimmercurial")
 
 command! Hstatus lua nvimmercurial.status.open()
 command! Hlog lua nvimmercurial.graphlog.open()
+command! -nargs=1 Hmove lua nvimmercurial.commands.move("<args>")
 
 nmap <silent> <Space>hst :Hstatus<CR>
 nmap <silent> <Space>hl  :Hlog<CR>

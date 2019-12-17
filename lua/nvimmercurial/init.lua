@@ -1,5 +1,6 @@
 local status = require("nvimmercurial/status")
 local graphlog = require("nvimmercurial/graphlog")
+local commands = require("nvimmercurial/commands")
 
 status.register_close_callback(function()
     graphlog.close()
@@ -26,4 +27,5 @@ end
 return {
     status = status,
     graphlog = graphlog,
+    commands = commands,
 }
