@@ -17,9 +17,11 @@ that is integrated into Neovim.
 ================================================================================
 Commands                                                      *mercurial-commands*
 
-Hstatus - show the status of the current repository.
-Hlog    - show the commit log of the current repository.
-Hmove   - move the current file to the new path and file name specified.
+Hstatus      - show the status of the current repository.
+Hlog         - show the commit log of the current repository.
+Hmove        - move the current file to the new path and file name specified.
+Hrename      - rename the current file with a name relative to the current file
+               location.
 
 ================================================================================
 Maps                                                              *mercurial-maps*
