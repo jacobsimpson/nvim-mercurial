@@ -2,7 +2,12 @@ mercurial-bugs	nvim-mercurial.txt	/*mercurial-bugs*
 mercurial-commands	nvim-mercurial.txt	/*mercurial-commands*
 mercurial-contents	nvim-mercurial.txt	/*mercurial-contents*
 mercurial-maps	nvim-mercurial.txt	/*mercurial-maps*
+mercurial-status-maps	nvim-mercurial.txt	/*mercurial-status-maps*
 mercurial-usage	nvim-mercurial.txt	/*mercurial-usage*
 mercurial_a	nvim-mercurial.txt	/*mercurial_a*
-mercurial_c	nvim-mercurial.txt	/*mercurial_c*
+mercurial_cc	nvim-mercurial.txt	/*mercurial_cc*
+mercurial_czp	nvim-mercurial.txt	/*mercurial_czp*
+mercurial_czz	nvim-mercurial.txt	/*mercurial_czz*
+mercurial_gf	nvim-mercurial.txt	/*mercurial_gf*
+mercurial_r	nvim-mercurial.txt	/*mercurial_r*
 nvim-mercurial.txt	nvim-mercurial.txt	/*nvim-mercurial.txt*

@@ -19,6 +19,7 @@ Commands                                                      *mercurial-command
 
 Hstatus - show the status of the current repository.
 Hlog    - show the commit log of the current repository.
+Hmove   - move the current file to the new path and file name specified.
 
 ================================================================================
 Maps                                                              *mercurial-maps*
